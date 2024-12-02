@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import sys
+import collections
 
 try:
   DAY=int(sys.argv[0].split('-')[-1].replace('.py',''))
@@ -8,8 +9,10 @@ except:
   DAY=0
 
 def process(filename):
+    input = []
     for line in open(filename):
         line = line.strip()
+        input.append(line)
 
 test = f'input/test-{DAY}.txt'
 real = f'input/day-{DAY}.txt'

@@ -1,39 +1,33 @@
 #!/usr/bin/env python3
 import os
 import sys
+import collections
 
 try:
   DAY=int(sys.argv[0].split('-')[-1].replace('.py',''))
 except:
   DAY=0
 
+# part I
 def is_safe(numbers):
     deltas = [a-b for a,b in zip(numbers, numbers[1:])]
     return all([1 <= d and d <= 3 for d in deltas]) or all([-3 <= d and d <= -1 for d in deltas])
 
+# part II
+def is_damper_safe(numbers):
+    return is_safe(numbers) or any(is_safe(numbers[:i]+numbers[i+1:]) for i in range(len(numbers)))
+
 def process(filename):
-    num_safe = 0
-    num_safe_corr = 0
+    input = []
     for line in open(filename):
         line = line.strip()
-        numbers = list(map(int, line.split()))
-
-        # part I
-        if is_safe(numbers):
-            num_safe = num_safe + 1
-        else:
-            # part II
-            for i in range(len(numbers)):
-                new_numbers = numbers[:i]+numbers[i+1:]
-                if is_safe(new_numbers):
-                    num_safe_corr =+ num_safe_corr + 1
-                    break
-
+        input.append(list(map(int, line.split())))
 
     # part I
-    print(num_safe)
+    print(sum(1 for numbers in input if is_safe(numbers)))
+
     # part II
-    print(num_safe+num_safe_corr)
+    print(sum(1 for numbers in input if is_damper_safe(numbers)))
 
 
 test = f'input/test-{DAY}.txt'
