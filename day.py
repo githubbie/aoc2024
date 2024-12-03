@@ -2,6 +2,7 @@
 import os
 import sys
 import collections
+import re
 
 try:
   DAY=int(sys.argv[0].split('-')[-1].replace('.py',''))
