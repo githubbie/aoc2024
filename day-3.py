@@ -11,18 +11,18 @@ except:
 
 def execute_all(line):
     ins = re.compile('mul\(([0-9]{1,3}),([0-9]{1,3})\)')
-    return sum(int(i)*int(j) for i,j in ins.findall(line))
+    return sum(int(m.group(1))*int(m.group(2)) for m in ins.finditer(line))
 
 def execute_cond(line):
     ins = re.compile("(do)\(\)|(don't)\(\)|(mul)\(([0-9]{1,3}),([0-9]{1,3})\)")
     total, conditional = 0, 1
-    for do,dont,mul,i,j in ins.findall(line):
-        if do != '':
+    for m in ins.finditer(line):
+        if m.group(1) != '':
             conditional = 1
-        elif dont != '':
+        elif m.group(2) != '':
             conditional = 0
         else:
-            total = total + conditional*int(i)*int(j)
+            total = total + conditional*int(m.group(4))*int(m.group(5))
     return total
 
 def process(filename):
