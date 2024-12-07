@@ -51,26 +51,36 @@ def fill_maze1(maze, guard):
         if o != '@':
             maze[y][x] = 'X'
 
+def o_code(o):
+    return 2**('^>v<'.index(o))
+
+def o_code_rotate(o):
+    return 2**('>v<^'.index(o))
+
 def mark(maze, guard):
     x,y,o = guard
-    if maze[y][x] in '01234567890abcdef':
+    if maze[y][x] == '#':
+        return '#'
+    elif maze[y][x] in '01234567890abcdef':
         current = int(maze[y][x],16)
     else:
         current = 0
-    return hex(current + 2**('^>v<'.index(o)))[-1]
+    return hex(current|o_code(o))[-1]
 
 def fill_maze2(maze, guard):
-    obstacles = 0
     x,y,o = guard
     maze[y][x] = mark(maze, guard)
     while guard[2] != '@':
         guard = next_pos(maze, guard)
         x,y,o = guard
         if o != '@':
-            maze[y][x] = mark(maze, guard)
-        print_maze(maze)
-        print(guard)
-    return obstacles
+            if maze[y][x] == mark(maze, guard):
+                return True
+            else:
+                maze[y][x] = mark(maze, guard)
+        #print_maze(maze)
+        #print(guard)
+    return False
 
 def process(filename):
     input = []
@@ -88,12 +98,26 @@ def process(filename):
         if guard != None:
             break
 
+    for o in '^>v<':
+        print(o_code(o), o_code_rotate(o))
+
     maze = copy.deepcopy(input)
     fill_maze1(maze, guard)
     print(sum(maze[y].count('X') for y in range(len(maze))))
 
-    maze = copy.deepcopy(input)
-    obstacles = fill_maze2(maze, guard)
+    g_x, g_y, _ = guard
+    obstacles = 0
+    for y in range(len(input)):
+        for x in range(len(input[0])):
+            maze = copy.deepcopy(input)
+            if maze[y][x] != '#' and (g_x != x or g_y != y):
+                maze[y][x] = '#'
+                if fill_maze2(maze, guard):
+                    obstacles += 1
+                    print("obstacle", x, y)
+                    print_maze(maze)
+                else:
+                    print("ok      ", x, y)
     print(obstacles)
 
 
