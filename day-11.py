@@ -19,27 +19,21 @@ def blink(stones):
             str_stone = str(stone)
             num_digits = len(str_stone)
             if num_digits%2 == 0:
-                new[int(str_stone[:int(len(str_stone)/2)])] += count
-                new[int(str_stone[int(len(str_stone)/2):])] += count
+                new[int(str_stone[:len(str_stone)//2])] += count
+                new[int(str_stone[len(str_stone)//2:])] += count
             else:
                 new[stone*2024] += count
     return new
       
 def process(filename):
-    input = []
     for line in open(filename):
-        line = list(map(int, line.strip().split()))
+        line = line.strip()
 
-        stones = collections.Counter(line)
-        for i in range(25):
-            #print(i, sum(count for count in stones.values()), stones)
+        stones = collections.Counter(map(int, line.split()))
+        for i in range(75):
             stones = blink(stones)
-        print(sum(count for count in stones.values()))
-
-        for i in range(50):
-            #print(i, sum(count for count in stones.values()), stones)
-            stones = blink(stones)
-        print(sum(count for count in stones.values()))
+            if i == 24 or i == 74:
+                print(sum(stones.values()))
 
 test = f'input/test-{DAY}.txt'
 real = f'input/day-{DAY}.txt'
