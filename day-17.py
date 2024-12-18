@@ -130,18 +130,17 @@ def process(filename):
     decode(program)
 
     # brute force first 2 output digits
-    new_options = set(a >> 3 for a in range(0, 2**6) if execute(a,b,c, program) == program[-2:])
+    options = set(a >> 3 for a in range(0, 2**6) if execute(a,b,c, program) == program[-2:])
 
     # loop over next output digits
     for digit in range(3,len(program)):
-        options, new_options = new_options, set()
-        new_options = set(a >> 3 for option in options \
-                                 for a in range(option << 6, (option << 6)+2**6) \
-                                 if execute(a,b,c, program) == program[-digit:])
+        options = set(a >> 3 for option in options \
+                             for a in range(option << 6, (option << 6)+2**6) \
+                             if execute(a,b,c, program) == program[-digit:])
 
     # get minimum A value by checking the final digit
-    min_A = min((a for option in new_options \
-                   for a in range(option << 6, (option << 6)+2**6) \
+    min_A = min((a for option in options \
+                   for a in range(option << 9, (option << 9)+2**9) \
                    if execute(a,b,c, program) == program), default=sys.maxsize)
     print(min_A)
 
