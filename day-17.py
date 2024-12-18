@@ -140,7 +140,7 @@ def process(filename):
 
     # get minimum A value by checking the final digit
     min_A = min((a for option in options \
-                   for a in range(option << 9, (option << 9)+2**9) \
+                   for a in range(option << 6, (option << 6)+2**6) \
                    if execute(a,b,c, program) == program), default=sys.maxsize)
     print(min_A)
 
