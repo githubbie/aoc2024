@@ -12,7 +12,7 @@ except:
 
 d1 = { (-1,0), (+1,0), (0,-1), (0,+1) }
 d2 = { (-2,0), (+2,0), (0,-2), (0,+2), (-1,-1), (-1,+1), (+1,-1), (+1,+1) }
-d20 = { (dx,dy) for dx in range(-20,20) for dy in range(-20,20) if abs(dx)+abs(dy) <= 20 }
+d20 = { (dx,dy) for dx in range(-20,20) for dy in range(-20,20) if 2 <= abs(dx)+abs(dy) <= 20 }
 
 def process(filename):
     track = {}
@@ -44,8 +44,8 @@ def process(filename):
             gain = track.get(jump, -1) - (track[pos]+2)
             if gain > 0:
                 if not gain in cheats:
-                    cheats[gain] = []
-                cheats[gain].append((pos, d))
+                    cheats[gain] = set()
+                cheats[gain].add((pos, d))
     print(sum(len(cheats[gain]) for gain in cheats if gain >= 100))
 
     # part 2, too low?
@@ -54,10 +54,14 @@ def process(filename):
         for d in d20:
             jump = (pos[0]+d[0],pos[1]+d[1])
             gain = track.get(jump, -1) - (track[pos]+abs(d[0])+abs(d[1]))
-            if gain > 0:
+            if abs(d[0]) == 20 and abs(pos[0]-end[0]) < 20 and pos[1] == end[1]:
+                continue
+            if abs(d[1]) == 20 and pos[0] == end[0] and abs(pos[1]-end[1]) < 20:
+                continue
+            if (gain > 0):
                 if not gain in cheats:
-                    cheats[gain] = []
-                cheats[gain].append((pos, d))
+                    cheats[gain] = set()
+                cheats[gain].add((pos, d))
     print(start, end, max(cheats), sorted(cheats[max(cheats)]))
     print(sum(len(cheats[gain]) for gain in cheats if gain >= 100))
 
